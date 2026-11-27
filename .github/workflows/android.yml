@@ -60,6 +60,29 @@ jobs:
             "build-tools;31.0.0" \
             "ndk;18.1.5063045"
 
+      - name: Configure legacy NDK for Gradle
+        working-directory: projects/NarutoSenki/proj.android-studio
+        run: |
+          NDK_DIR="$ANDROID_SDK_ROOT/ndk/18.1.5063045"
+
+          if [ ! -d "$NDK_DIR" ]; then
+            echo "Expected NDK not found: $NDK_DIR"
+            ls -la "$ANDROID_SDK_ROOT/ndk" || true
+            exit 1
+          fi
+
+          echo "Using NDK: $NDK_DIR"
+          echo "ANDROID_NDK_HOME=$NDK_DIR" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_ROOT=$NDK_DIR" >> "$GITHUB_ENV"
+
+          {
+            echo "sdk.dir=$ANDROID_SDK_ROOT"
+            echo "ndk.dir=$NDK_DIR"
+          } > local.properties
+
+          echo "local.properties:"
+          cat local.properties
+
       - name: Set up Java 8 for Gradle
         uses: actions/setup-java@v4
         with:
@@ -70,6 +93,8 @@ jobs:
       - name: Build debug APK
         working-directory: projects/NarutoSenki/proj.android-studio
         run: |
+          echo "ANDROID_NDK_HOME=$ANDROID_NDK_HOME"
+          "$ANDROID_NDK_HOME/ndk-build" --version
           chmod +x gradlew
           ./gradlew --no-daemon --stacktrace assembleDebug
 
