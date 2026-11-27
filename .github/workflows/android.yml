@@ -90,6 +90,10 @@ jobs:
           java-version: '8'
           cache: gradle
 
+      - name: Prepare fmt headers
+        run: |
+          git clone --depth 1 --branch 8.1.1 https://github.com/fmtlib/fmt.git external/fmt
+
       - name: Build debug APK
         working-directory: projects/NarutoSenki/proj.android-studio
         run: |
