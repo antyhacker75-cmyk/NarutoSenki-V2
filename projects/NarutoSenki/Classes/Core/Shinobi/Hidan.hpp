@@ -1,3 +1,4 @@
+#include <algorithm>
 #pragma once
 #include "Hero.hpp"
 
@@ -222,7 +223,7 @@ class Hidan : public Hero
 		{
 			for (auto mo : _monsterArray)
 			{
-				std::erase(getGameLayer()->_CharacterArray, mo);
+				getGameLayer()->_CharacterArray.erase(std::remove(getGameLayer()->_CharacterArray.begin(), getGameLayer()->_CharacterArray.end(), mo), getGameLayer()->_CharacterArray.end());
 
 				CCNotificationCenter::sharedNotificationCenter()->removeAllObservers(mo);
 				mo->setState(State::DEAD);
