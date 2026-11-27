@@ -1,3 +1,4 @@
+#include <algorithm>
 #pragma once
 #include "Element.h"
 
@@ -509,7 +510,7 @@ public:
 		{
 			unschedule(schedule_selector(CharacterBase::setAI));
 
-			std::erase(getGameLayer()->_CharacterArray, this);
+			getGameLayer()->_CharacterArray.erase(std::remove(getGameLayer()->_CharacterArray.begin(), getGameLayer()->_CharacterArray.end(), this), getGameLayer()->_CharacterArray.end());
 			getGameLayer()->clearAllFlogsMainTarget(this);
 
 			if (_shadow)
