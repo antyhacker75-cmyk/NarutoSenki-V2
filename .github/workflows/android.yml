@@ -90,9 +90,10 @@ jobs:
           java-version: '8'
           cache: gradle
 
-      - name: Prepare fmt headers
+      - name: Verify vendored fmt headers
         run: |
-          git clone --depth 1 --branch 8.1.1 https://github.com/fmtlib/fmt.git external/fmt
+          test -f external/fmt/core.h
+          echo "Using vendored fmt: external/fmt/core.h"
 
       - name: Build debug APK
         working-directory: projects/NarutoSenki/proj.android-studio
