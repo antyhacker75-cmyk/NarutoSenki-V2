@@ -5,6 +5,8 @@ LOCAL_MODULE    := cocos_lua_static
 
 LOCAL_MODULE_FILENAME := liblua
 
+MY_FMT_INCLUDE := $(LOCAL_PATH)/../../../external/fmt/include
+
 LOCAL_SRC_FILES := ../cocos2dx_support/CCLuaBridge.cpp \
           ../cocos2dx_support/CCLuaEngine.cpp \
           ../cocos2dx_support/CCLuaStack.cpp \
@@ -40,7 +42,7 @@ LOCAL_C_INCLUDES := $(LOCAL_PATH)/ \
                     $(LOCAL_PATH)/../../../extensions \
                     $(LOCAL_PATH)/../xxtea \
                     $(LOCAL_PATH)/../../../external/sqlite3/src \
-                    $(LOCAL_PATH)/../../../external/fmt/include \
+                    $(MY_FMT_INCLUDE) \
                     $(LOCAL_PATH)/../../../projects/NarutoSenki/Classes \
                     $(LOCAL_PATH)/../../../projects/NarutoSenki/Classes/Core \
                     $(LOCAL_PATH)/../../../projects/NarutoSenki/Classes/MyTools
