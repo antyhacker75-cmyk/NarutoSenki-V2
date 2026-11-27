@@ -5,7 +5,7 @@ LOCAL_MODULE    := cocos_lua_static
 
 LOCAL_MODULE_FILENAME := liblua
 
-MY_FMT_INCLUDE := $(LOCAL_PATH)/../../../external/fmt/include
+MY_FMT_INCLUDE := $(LOCAL_PATH)/../../../external
 
 LOCAL_SRC_FILES := ../cocos2dx_support/CCLuaBridge.cpp \
           ../cocos2dx_support/CCLuaEngine.cpp \
