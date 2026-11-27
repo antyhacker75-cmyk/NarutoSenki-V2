@@ -14,26 +14,24 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # setup-android v3 requires JDK 17+ for its sdkmanager.
       - name: Set up Java 17 for Android SDK tools
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
 
       - name: Install Android SDK and NDK
         run: |
-          sdkmanager --install \
+          sdkmanager \
             "platform-tools" \
             "platforms;android-31" \
             "build-tools;31.0.0" \
             "ndk;18.1.5063045"
 
-      # The project uses Gradle 5.6.4 / Android Gradle Plugin 3.3.3,
-      # so switch back to Java 8 for the actual Gradle build.
       - name: Set up Java 8 for Gradle
         uses: actions/setup-java@v4
         with:
