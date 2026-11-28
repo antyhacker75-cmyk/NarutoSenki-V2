@@ -275,6 +275,17 @@ CCSequence::CCSequence()
 
 CCSequence* CCSequence::create(const Vector<CCFiniteTimeAction*>& arrayOfActions)
 {
+    CCLOG("[SEQ-DIAG] create count=%d", (int)arrayOfActions.size());
+
+    for (int i = 0; i < (int)arrayOfActions.size(); ++i)
+    {
+        auto action = arrayOfActions.at(i);
+        CCLOG("[SEQ-DIAG] action[%d]=%p", i, (void*)action);
+
+        if (action == nullptr)
+            CCLOG("[SEQ-DIAG] NULL ACTION at index %d", i);
+    }
+
     CCSequence* seq = new (std::nothrow) CCSequence;
     
     if (seq && seq->init(arrayOfActions))
