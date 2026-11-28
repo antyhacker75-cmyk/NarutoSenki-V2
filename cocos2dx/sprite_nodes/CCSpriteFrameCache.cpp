@@ -383,18 +383,35 @@ void CCSpriteFrameCache::removeSpriteFramesFromFile(const char *plist)
 
 void CCSpriteFrameCache::removeSpriteFramesFromDictionary(CCDictionary *dictionary)
 {
+    CCLOG("SPRITE_CACHE_DIAG: remove dictionary=%p cache=%p aliases=%p loaded=%p",
+          dictionary, m_pSpriteFrames, m_pSpriteFramesAliases, m_pLoadedFileNames);
+
     if (!dictionary)
     {
-        CCLOG("CCSpriteFrameCache: Cannot remove frames from a null dictionary");
+        CCLOG("SPRITE_CACHE_DIAG: null plist dictionary");
+        return;
+    }
+
+    if (!m_pSpriteFrames)
+    {
+        CCLOG("SPRITE_CACHE_DIAG: null sprite-frame cache; aborting removal");
+        return;
+    }
+
+    if (!m_pLoadedFileNames)
+    {
+        CCLOG("SPRITE_CACHE_DIAG: null loaded-file set");
         return;
     }
 
     CCDictionary *framesDict = (CCDictionary *)dictionary->objectForKey("frames");
     if (!framesDict)
     {
-        CCLOG("CCSpriteFrameCache: Plist has no frames dictionary");
+        CCLOG("SPRITE_CACHE_DIAG: plist has no frames dictionary");
         return;
     }
+
+    CCLOG("SPRITE_CACHE_DIAG: frames=%p", framesDict);
 
     CCArray *keysToRemove = CCArray::create();
 
