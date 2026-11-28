@@ -240,43 +240,66 @@ void KTools::prepareFileOGG(const string &listName, bool unload /* =false */)
 		return;
 	}
 
-	// MD5
 	const string md5Path = "Audio/list.xml";
-	bool isExisted = FileUtils::sharedFileUtils()->isFileExist(md5Path);
-	if (!isExisted)
+	if (!FileUtils::sharedFileUtils()->isFileExist(md5Path))
 	{
 		return;
 	}
 
-	unsigned long nSize;
-	const char *pXmlBuffer = (const char *)FileUtils::sharedFileUtils()->getFileData(md5Path.c_str(), "r", &nSize);
+	unsigned long nSize = 0;
+	const char *pXmlBuffer =
+		(const char *)FileUtils::sharedFileUtils()->getFileData(md5Path.c_str(), "r", &nSize);
+
+	if (pXmlBuffer == nullptr || nSize == 0)
+	{
+		CCLOG("prepareFileOGG: unable to read %s", md5Path.c_str());
+		delete[] pXmlBuffer;
+		return;
+	}
+
 	tinyxml2::XMLDocument doc;
-	doc.Parse(pXmlBuffer);
-	delete pXmlBuffer;
+	const auto err = doc.Parse(pXmlBuffer, nSize);
+	delete[] pXmlBuffer;
+
+	if (err != tinyxml2::XML_SUCCESS)
+	{
+		CCLOG("prepareFileOGG: XML parse failed for %s: %s",
+			md5Path.c_str(), tinyxml2::XMLDocument::ErrorIDToName(err));
+		return;
+	}
 
 	auto rootEle = doc.RootElement();
-	auto fileEle = rootEle->FirstChildElement();
-
-	while (fileEle)
+	if (rootEle == nullptr)
 	{
-		auto pathSrc = fileEle->FirstAttribute()->Value();
+		CCLOG("prepareFileOGG: XML root is missing in %s", md5Path.c_str());
+		return;
+	}
+
+	for (auto fileEle = rootEle->FirstChildElement();
+		 fileEle != nullptr;
+		 fileEle = fileEle->NextSiblingElement())
+	{
+		auto attribute = fileEle->FirstAttribute();
 		auto soundPath = fileEle->GetText();
-		if (pathSrc == listName)
+
+		if (attribute == nullptr || soundPath == nullptr)
+		{
+			continue;
+		}
+
+		if (listName == attribute->Value())
 		{
 			if (!unload)
 			{
 				SimpleAudioEngine::sharedEngine()->preloadEffect(soundPath);
 			}
-			else if (unload)
+			else
 			{
 				SimpleAudioEngine::sharedEngine()->unloadEffect(soundPath);
 			}
 		}
-
-		fileEle = fileEle->NextSiblingElement();
 	}
 }
-
 sqlite3 *KTools::prepareTableInDB()
 {
 	sqlite3 *pDB = nullptr;
