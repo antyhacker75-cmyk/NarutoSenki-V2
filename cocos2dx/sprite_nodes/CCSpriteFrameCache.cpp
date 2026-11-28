@@ -360,21 +360,42 @@ void CCSpriteFrameCache::removeSpriteFramesFromFile(const char *plist)
     std::string fullPath = CCFileUtils::sharedFileUtils()->fullPathForFilename(plist);
     CCDictionary *dict = CCDictionary::createWithContentsOfFileThreadSafe(fullPath.c_str());
 
-    removeSpriteFramesFromDictionary((CCDictionary *)dict);
+    if (dict)
+    {
+        removeSpriteFramesFromDictionary(dict);
+    }
+    else
+    {
+        CCLOG("CCSpriteFrameCache: Unable to load plist for removal: %s", fullPath.c_str());
+    }
 
-    // remove it from the cache
     set<string>::iterator ret = m_pLoadedFileNames->find(plist);
     if (ret != m_pLoadedFileNames->end())
     {
         m_pLoadedFileNames->erase(ret);
     }
 
-    dict->release();
+    if (dict)
+    {
+        dict->release();
+    }
 }
 
 void CCSpriteFrameCache::removeSpriteFramesFromDictionary(CCDictionary *dictionary)
 {
+    if (!dictionary)
+    {
+        CCLOG("CCSpriteFrameCache: Cannot remove frames from a null dictionary");
+        return;
+    }
+
     CCDictionary *framesDict = (CCDictionary *)dictionary->objectForKey("frames");
+    if (!framesDict)
+    {
+        CCLOG("CCSpriteFrameCache: Plist has no frames dictionary");
+        return;
+    }
+
     CCArray *keysToRemove = CCArray::create();
 
     CCDictElement *pElement = NULL;
