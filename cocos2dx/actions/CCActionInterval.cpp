@@ -266,6 +266,13 @@ CCSequence* CCSequence::create(CCArray* arrayOfActions)
     return pRet;
 }
 
+CCSequence::CCSequence()
+    : m_pActions{nullptr, nullptr},
+      m_split(0.0f),
+      m_last(-1)
+{
+}
+
 CCSequence* CCSequence::create(const Vector<CCFiniteTimeAction*>& arrayOfActions)
 {
     CCSequence* seq = new (std::nothrow) CCSequence;

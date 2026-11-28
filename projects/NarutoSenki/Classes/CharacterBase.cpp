@@ -969,6 +969,9 @@ FiniteTimeAction *CharacterBase::createAnimation(CCArray *ationArray, uint8_t fp
 	if (ationArray == nullptr || ationArray->count() == 0)
 		return nullptr;
 
+        if (fps == 0)
+                return nullptr;
+
 	Vector<SpriteFrame *> spriteFrames;
 	Vector<FiniteTimeAction *> list;
 	Animation *tempAnimation;
@@ -999,10 +1002,13 @@ FiniteTimeAction *CharacterBase::createAnimation(CCArray *ationArray, uint8_t fp
 			}
 			else
 			{
-				tempAnimation = Animation::createWithSpriteFrames(spriteFrames, 1.0f / fps);
-				tempAction = Animate::create(tempAnimation);
-
-				list.pushBack(tempAction);
+				if (!spriteFrames.empty())
+				{
+				        tempAnimation = Animation::createWithSpriteFrames(spriteFrames, 1.0f / fps);
+				        tempAction = Animate::create(tempAnimation);
+				        if (tempAction)
+				                list.pushBack(tempAction);
+				}
 				if (key == "setAttackBox")
 				{
 					auto call = CallFunc::create(std::bind(&CharacterBase::setAttackBox, this, keyValue));
@@ -1127,9 +1133,12 @@ FiniteTimeAction *CharacterBase::createAnimation(CCArray *ationArray, uint8_t fp
 				}
 				else if (key == "setShadow")
 				{
-					auto frame = spriteFrames.at(spriteFrames.size() - 1);
-					auto call = CallFunc::create(std::bind(&CharacterBase::setShadow, this, frame));
-					list.pushBack(call);
+					if (!spriteFrames.empty())
+					{
+					        auto frame = spriteFrames.back();
+					        auto call = CallFunc::create(std::bind(&CharacterBase::setShadow, this, frame));
+					        list.pushBack(call);
+					}
 				}
 				else if (key == "setTransform")
 				{
@@ -1164,20 +1173,26 @@ FiniteTimeAction *CharacterBase::createAnimation(CCArray *ationArray, uint8_t fp
 		list.pushBack(tempAction);
 	}
 
-	if (isLoop)
-	{
-		seq = RepeatForever::create(Sequence::create(list));
-	}
-	else
-	{
-		if (isReturnToIdle)
-		{
-			auto call = CallFunc::create(std::bind(&CharacterBase::idle, this));
-			list.pushBack(call);
-		}
+        if (isLoop)
+        {
+                if (list.empty())
+                        return nullptr;
 
-		seq = Sequence::create(list);
-	}
+                seq = RepeatForever::create(Sequence::create(list));
+        }
+        else
+        {
+                if (isReturnToIdle)
+                {
+                        auto call = CallFunc::create(std::bind(&CharacterBase::idle, this));
+                        list.pushBack(call);
+                }
+
+                if (list.empty())
+                        return nullptr;
+
+                seq = Sequence::create(list);
+        }
 
 	return seq;
 }

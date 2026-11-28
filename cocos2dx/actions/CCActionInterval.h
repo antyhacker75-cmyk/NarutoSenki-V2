@@ -100,6 +100,7 @@ protected:
 class CC_DLL CCSequence : public CCActionInterval
 {
 public:
+    CCSequence();
     /**
      * @js NA
      * @lua NA
