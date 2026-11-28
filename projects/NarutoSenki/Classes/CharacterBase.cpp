@@ -988,7 +988,14 @@ FiniteTimeAction *CharacterBase::createAnimation(CCArray *ationArray, uint8_t fp
 			if (key == "f")
 			{
 				auto frame = getSpriteFrame(keyValue);
-				spriteFrames.pushBack(frame);
+				if (frame)
+				{
+				        spriteFrames.pushBack(frame);
+				}
+				else
+				{
+				        CCLOG("createAnimation: missing sprite frame: %s", keyValue.c_str());
+				}
 			}
 			else
 			{
