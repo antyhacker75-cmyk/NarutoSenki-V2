@@ -10,6 +10,24 @@
 
 CharacterBase::CharacterBase()
 {
+    idleArray = nullptr;
+    walkArray = nullptr;
+    hurtArray = nullptr;
+    airHurtArray = nullptr;
+    knockDownArray = nullptr;
+    floatArray = nullptr;
+    deadArray = nullptr;
+    nattackArray = nullptr;
+    skill1Array = nullptr;
+    skill2Array = nullptr;
+    skill3Array = nullptr;
+    skill4Array = nullptr;
+    skill5Array = nullptr;
+    skillSPC1Array = nullptr;
+    skillSPC2Array = nullptr;
+    skillSPC3Array = nullptr;
+    skillSPC4Array = nullptr;
+    skillSPC5Array = nullptr;
 	_state = State::WALK;
 
 	_idleAction = nullptr;
